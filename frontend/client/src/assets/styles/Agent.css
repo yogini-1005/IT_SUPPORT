@@ -1,0 +1,218 @@
+/* Shared styles for both panels */
+.admin-container, .agent-container {
+    max-width: 1200px;
+    margin:  50px auto 0 auto;
+    padding: 2rem;
+  }
+  
+  .admin-header, .agent-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .admin-header h1, .agent-header h1 {
+    font-size: 2rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+  
+  .admin-header p, .agent-header p {
+    color: #718096;
+    font-size: 1.1rem;
+  }
+  
+  .admin-controls, .agent-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .refresh-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #f0f4f8;
+    border: 1px solid #dae1e7;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .refresh-btn:hover {
+    background-color: #e2e8f0;
+  }
+  
+  .search-filter {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .no-tickets img{
+    height: 70px;
+    width: 70px;
+  }
+  
+  input, select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+  }
+  
+  .tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .ticket-card {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .ticket-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid #edf2f7;
+  }
+  
+  .ticket-header h3 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+  
+  .ticket-meta {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .status-badge, .priority-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .ticket-body {
+    padding: 1.25rem;
+    flex-grow: 1;
+  }
+  
+  .ticket-description {
+    color: #4a5568;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+  
+  .ticket-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .detail-label {
+    font-size: 0.875rem;
+    color: #718096;
+    font-weight: 500;
+  }
+  
+  .unassigned {
+    color: #e53e3e;
+    font-weight: 500;
+  }
+  
+  .ticket-footer {
+    padding: 1.25rem;
+    border-top: 1px solid #edf2f7;
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .ticket-footer select {
+    flex-grow: 1;
+  }
+  
+  .ticket-footer button {
+    padding: 0.75rem 1.5rem;
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .ticket-footer button:hover {
+    background-color: #3182ce;
+  }
+  
+  .ticket-footer button:disabled {
+    background-color: #bee3f8;
+    cursor: not-allowed;
+  }
+  
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+  }
+  
+  .spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid rgba(66, 153, 225, 0.2);
+    border-top-color: #4299e1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .no-tickets {
+    text-align: center;
+    padding: 3rem;
+    color: #718096;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .admin-controls, .agent-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .tickets-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .ticket-details {
+      grid-template-columns: 1fr;
+    }
+  }

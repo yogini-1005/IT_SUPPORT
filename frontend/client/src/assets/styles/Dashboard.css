@@ -1,0 +1,97 @@
+.tickets-page{
+  padding-top: 80px;
+  padding-bottom: 3rem;
+}
+
+.ticket-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2.5rem; /* increased gap for more spacing */
+  padding: 0 1rem; /* optional: add side padding */
+}
+
+.ticket-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.ticket-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Priority badge styles */
+.priority-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 2px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.priority-badge.low {
+  background-color: #38b2ac;
+}
+
+.priority-badge.medium {
+  background-color: #f6ad55;
+}
+
+.priority-badge.high {
+  background-color: #e53e3e;
+}
+
+/* Status badge styles */
+.status-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.75rem;
+  font-size: 2px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.status-badge.open {
+  background-color: #3182ce;
+}
+
+.status-badge.in_progress {
+  background-color: #f6ad55;
+}
+
+.status-badge.closed {
+  background-color: #48bb78;
+}
+
+.filter-dropdown {
+  min-width: 180px;
+}
+
+.create-btn {
+  background-color: #4299e1;
+  color: #fff;
+  transition: all 0.3s ease;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 700;
+}
+
+.create-btn:hover {
+  background-color: #fff;
+  color: #4299e1;
+  border: 1px solid #4299e1;
+}
+
+.empty-state {
+  background: #f4f6f8;
+  border-radius: 1rem;
+  padding: 2rem;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+
