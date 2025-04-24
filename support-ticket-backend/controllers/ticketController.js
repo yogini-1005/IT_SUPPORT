@@ -1,11 +1,13 @@
 const Ticket = require('../models/Ticket');
+const path = require('path'); // For handling file extensions
+const fs = require('fs'); // To handle file deletion in case of error
+
 
 const createTicket = (req, res) => {
   console.log("🔐 User from token:", req.user); 
+  console.log("📁 Uploaded file:", req.file); // Helpful for debugging
 
   const { title, description, priority, department_id } = req.body;
-
-  // Extract user ID from decoded token
   const userId = req.user?.id;
 
   if (!userId) {
@@ -22,13 +24,20 @@ const createTicket = (req, res) => {
     user_id: userId,
   };
 
-  Ticket.createTicket(newTicket, (err, result) => {
-    if (err) return res.status(500).json({ message: 'Failed to create ticket', error: err });
+  // ✅ Pass the uploaded file to the model
+  Ticket.createTicket(newTicket, req.file, (err, result) => {
+    if (err) {
+      console.error('Error creating ticket:', err);
+      return res.status(500).json({ message: 'Failed to create ticket', error: err });
+    }
 
     res.status(201).json({ message: 'Ticket created successfully', ticketId: result.insertId });
   });
 };
 
+
+
+// Assign a ticket
 const assignTicket = (req, res) => {
   const ticketId = req.params.id;
   const { userId } = req.body;
@@ -47,7 +56,7 @@ const assignTicket = (req, res) => {
   });
 };
 
-
+// Update ticket status
 const updateTicketStatus = (req, res) => {
   const ticketId = req.params.id;
   const { status } = req.body;
@@ -65,6 +74,7 @@ const updateTicketStatus = (req, res) => {
   });
 };
 
+// Get all tickets (admin-only)
 const getTickets = (req, res) => {
   const userId = req.user.id;
   const userRole = req.user.role;
@@ -82,6 +92,7 @@ const getTickets = (req, res) => {
   }
 };
 
+// Get ticket by ID
 const getTicketById = (req, res) => {
   const ticketId = req.params.id;
   Ticket.getTicketById(ticketId, (err, ticket) => {

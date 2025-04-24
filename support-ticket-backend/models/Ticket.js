@@ -1,9 +1,12 @@
 const db = require('../config/db');
 
-const createTicket = (ticket, callback) => {
+const createTicket = (ticket, file, callback) => {
+  // If there's a file, save its path; otherwise, set it to null
+  const filePath = file ? `/uploads/${file.filename}` : null;
+
   const sql = `
-    INSERT INTO tickets (title, description, priority, status, department_id, assigned_to, user_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO tickets (title, description, priority, status, department_id, assigned_to, user_id, attachment)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
   const values = [
     ticket.title,
@@ -12,8 +15,10 @@ const createTicket = (ticket, callback) => {
     ticket.status || 'open',
     ticket.department_id,
     ticket.assigned_to || null,
-    ticket.user_id // ✅ Make sure this is added!
+    ticket.user_id, // ✅ Make sure this is added!
+    filePath // Save the file path (or null if no file)
   ];
+
   db.query(sql, values, callback);
 };
 

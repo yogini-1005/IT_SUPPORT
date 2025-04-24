@@ -144,6 +144,15 @@ const MyTickets = () => {
                   Created: {new Date(ticket.created_at).toLocaleString()}
                 </small>
               </p>
+              <button
+      className="btn btn-sm btn-primary mt-2 px-2 py-1"
+      onClick={(e) => {
+        e.stopPropagation(); // Prevent modal from opening
+        navigate(`/edit-ticket/${ticket.id}`);
+      }}
+    >
+      Edit
+    </button>
             </div>
           ))}
         </div>

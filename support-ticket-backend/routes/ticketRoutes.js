@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer'); // Import multer for file upload
+const path = require('path'); // For handling file extensions
 const {
   createTicket,
   assignTicket,
@@ -11,8 +13,36 @@ const {
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const db = require('../config/db');
 
-// Route to create a ticket
-router.post('/create', authenticateToken, createTicket);
+// Set up multer storage configuration for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Folder where files will be stored
+  },
+  filename: (req, file, cb) => {
+    // Rename file with timestamp to avoid conflicts
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+// Initialize multer with storage options (only allowing image or file uploads)
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif|pdf|docx/; // Allowed file types
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+      return cb(null, true); // Accept the file
+    } else {
+      cb(new Error('File type not allowed'), false); // Reject the file
+    }
+  },
+  limits: { fileSize: 10 * 1024 * 1024 } // Max file size of 10MB
+});
+
+// Route to create a ticket (with file upload)
+router.post('/create', authenticateToken, upload.single('attachment'), createTicket); // Here 'attachment' is the key to access the file in the frontend
 
 // Route to assign a ticket (only accessible by admin)
 router.put('/:id/assign', authenticateToken, authorizeRoles('admin'), assignTicket);
@@ -41,7 +71,7 @@ router.get('/user/:id', authenticateToken, (req, res) => {
   });
 });
 
-
+// Route to get assigned tickets for the logged-in user
 router.get('/assigned', authenticateToken, async (req, res) => {
   const userId = req.user.id;
 
@@ -62,7 +92,7 @@ router.get('/assigned', authenticateToken, async (req, res) => {
   }
 });
 
-
+// Route to update ticket status (either 'in_progress', 'resolved', or 'closed')
 router.put('/:id/status', authenticateToken, async (req, res) => {
   const ticketId = req.params.id;
   const userId = req.user.id;
@@ -71,10 +101,9 @@ router.put('/:id/status', authenticateToken, async (req, res) => {
   console.log(`🚨 Update request: TicketID=${ticketId}, UserID=${userId}, Status=${status}`);
 
   const allowedStatuses = ['in_progress', 'resolved', 'closed'];
-if (!allowedStatuses.includes(status)) {
-  return res.status(400).json({ message: 'Invalid status update' });
-}
-
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({ message: 'Invalid status update' });
+  }
 
   try {
     const [check] = await db.promise().query(
@@ -94,13 +123,12 @@ if (!allowedStatuses.includes(status)) {
 
     console.log("✅ Update result:", updateResult);
 
-    res.json({ message: 'Ticket status updated to solved' });
+    res.json({ message: 'Ticket status updated successfully' });
   } catch (err) {
     console.error('🔥 Error updating ticket:', err);
     res.status(500).json({ message: 'Internal server error', error: err });
   }
 });
-
 
 // Route to get solved tickets for admin
 router.get('/solved-tickets', authenticateToken, authorizeRoles('admin'), async (req, res) => {
@@ -110,7 +138,7 @@ router.get('/solved-tickets', authenticateToken, authorizeRoles('admin'), async 
        FROM tickets 
        JOIN departments ON tickets.department_id = departments.id
        JOIN users u ON tickets.user_id = u.id
-       WHERE tickets.status = 'solved'`
+       WHERE tickets.status = 'resolved'`
     );
     res.json(tickets); // Send the solved tickets to the frontend
   } catch (err) {
@@ -118,8 +146,6 @@ router.get('/solved-tickets', authenticateToken, authorizeRoles('admin'), async 
     res.status(500).json({ error: 'Failed to fetch solved tickets' });
   }
 });
-
-
 
 // Route to get ticket by ID
 router.get('/:id', authenticateToken, getTicketById);

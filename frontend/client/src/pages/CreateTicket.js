@@ -11,7 +11,7 @@ const CreateTicket = () => {
     priority: 'low',
     department_id: '',
   });
-
+  const [file, setFile] = useState(null);  // New state to track the file
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [departmentLoading, setDepartmentLoading] = useState(true);
@@ -37,17 +37,34 @@ const CreateTicket = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'attachment') {
+      setFile(e.target.files[0]);  // Handle the selected file
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    const data = new FormData();  // FormData to handle file upload
+
+    // Append form data
+    data.append('title', formData.title);
+    data.append('description', formData.description);
+    data.append('priority', formData.priority);
+    data.append('department_id', formData.department_id);
+
+    if (file) {
+      data.append('attachment', file);  // Append the file if it exists
+    }
+
     try {
-      await axios.post('/tickets/create', formData, {
+      await axios.post('/tickets/create', data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data', // Important for file upload
         },
       });
       toast.success('Ticket created successfully!');
@@ -58,6 +75,7 @@ const CreateTicket = () => {
         priority: 'low',
         department_id: '',
       });
+      setFile(null);  // Reset the file input after submission
       navigate('/my-tickets');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to create ticket');
@@ -74,7 +92,7 @@ const CreateTicket = () => {
           <p>Fill out the form below to submit a new support request</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="ticket-form">
+        <form onSubmit={handleSubmit} className="ticket-form" encType="multipart/form-data">
           <div className="form-group">
             <label htmlFor="title">Ticket Title</label>
             <input
@@ -139,6 +157,19 @@ const CreateTicket = () => {
                 <small className="loading-text">Loading departments...</small>
               )}
             </div>
+          </div>
+
+          {/* File input */}
+          <div className="form-group">
+            <label htmlFor="file">Attach a File</label>
+            <input
+              type="file"
+              id="attachment"
+              name="attachment" // ✅ match backend field name
+              accept="image/*,application/*"
+              onChange={handleChange}
+            />
+
           </div>
 
           <button
