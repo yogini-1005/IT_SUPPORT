@@ -1,48 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer'); // Import multer for file upload
-const path = require('path'); // For handling file extensions
+const path = require('path');
+const upload = require('../middleware/upload'); // ✅ Only this upload remains
 const {
   createTicket,
   assignTicket,
   updateTicketStatus,
   getTickets,
-  getTicketById
+  getTicketById,
+  updateTicketWithFile
 } = require('../controllers/ticketController');
 
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const db = require('../config/db');
 
-// Set up multer storage configuration for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Folder where files will be stored
-  },
-  filename: (req, file, cb) => {
-    // Rename file with timestamp to avoid conflicts
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
-// Initialize multer with storage options (only allowing image or file uploads)
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|gif|pdf|docx/; // Allowed file types
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-
-    if (extname && mimetype) {
-      return cb(null, true); // Accept the file
-    } else {
-      cb(new Error('File type not allowed'), false); // Reject the file
-    }
-  },
-  limits: { fileSize: 10 * 1024 * 1024 } // Max file size of 10MB
-});
-
 // Route to create a ticket (with file upload)
-router.post('/create', authenticateToken, upload.single('attachment'), createTicket); // Here 'attachment' is the key to access the file in the frontend
+router.post('/create', authenticateToken, upload.single('attachment'), createTicket);
 
 // Route to assign a ticket (only accessible by admin)
 router.put('/:id/assign', authenticateToken, authorizeRoles('admin'), assignTicket);
@@ -50,12 +23,15 @@ router.put('/:id/assign', authenticateToken, authorizeRoles('admin'), assignTick
 // Route to update ticket status
 router.put('/:id/status', authenticateToken, updateTicketStatus);
 
+// Route to update ticket with file (edit with optional file)
+router.put('/update/:id', authenticateToken, upload.single('attachment'), updateTicketWithFile);
+
 // Route to get all tickets (admin-only)
 router.get('/', authenticateToken, getTickets);
 
-// Route to get tickets by user (only the authenticated user can access their own tickets)
+// Route to get tickets by user
 router.get('/user/:id', authenticateToken, (req, res) => {
-  const userId = req.user.id; // Securely get user ID from token
+  const userId = req.user.id;
 
   const query = `
     SELECT t.*, d.name AS department_name
@@ -92,13 +68,11 @@ router.get('/assigned', authenticateToken, async (req, res) => {
   }
 });
 
-// Route to update ticket status (either 'in_progress', 'resolved', or 'closed')
+// Route to update ticket status (only by assigned user)
 router.put('/:id/status', authenticateToken, async (req, res) => {
   const ticketId = req.params.id;
   const userId = req.user.id;
   const { status } = req.body;
-
-  console.log(`🚨 Update request: TicketID=${ticketId}, UserID=${userId}, Status=${status}`);
 
   const allowedStatuses = ['in_progress', 'resolved', 'closed'];
   if (!allowedStatuses.includes(status)) {
@@ -115,22 +89,19 @@ router.put('/:id/status', authenticateToken, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this ticket' });
     }
 
-    const [updateResult] = await db.promise().query(
+    await db.promise().query(
       'UPDATE tickets SET status = ? WHERE id = ?',
       [status, ticketId]
     );
-    console.log("Updating ticket", ticketId, "with status:", status);
-
-    console.log("✅ Update result:", updateResult);
 
     res.json({ message: 'Ticket status updated successfully' });
   } catch (err) {
-    console.error('🔥 Error updating ticket:', err);
+    console.error('Error updating ticket:', err);
     res.status(500).json({ message: 'Internal server error', error: err });
   }
 });
 
-// Route to get solved tickets for admin
+// Route to get solved tickets (admin)
 router.get('/solved-tickets', authenticateToken, authorizeRoles('admin'), async (req, res) => {
   try {
     const [tickets] = await db.promise().query(
@@ -140,7 +111,7 @@ router.get('/solved-tickets', authenticateToken, authorizeRoles('admin'), async 
        JOIN users u ON tickets.user_id = u.id
        WHERE tickets.status = 'resolved'`
     );
-    res.json(tickets); // Send the solved tickets to the frontend
+    res.json(tickets);
   } catch (err) {
     console.error('Error fetching solved tickets:', err);
     res.status(500).json({ error: 'Failed to fetch solved tickets' });

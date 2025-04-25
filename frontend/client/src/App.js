@@ -21,6 +21,7 @@ import Features from "./pages/Features";
 import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import EditTicket from "./pages/EditTicket";
 
 function App() {
   return (
@@ -92,6 +93,14 @@ function App() {
           element={
             <PrivateRoute>
               <AssignedTickets />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/edit-ticket/:id" 
+          element={
+            <PrivateRoute>
+              <EditTicket />
             </PrivateRoute>
           }
         />

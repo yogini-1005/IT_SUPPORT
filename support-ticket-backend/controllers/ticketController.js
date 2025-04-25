@@ -102,10 +102,34 @@ const getTicketById = (req, res) => {
   });
 };
 
+
+const updateTicketWithFile = (req, res) => {
+  const ticketId = req.params.id;
+  const { title, description, priority, department_id } = req.body;
+  const file = req.file;
+
+  const updatedFields = {
+    title,
+    description,
+    priority,
+    department_id,
+    attachment: req.body.existingAttachment || null // fallback if no new file
+  };
+
+  Ticket.updateTicketWithFile(ticketId, updatedFields, file, (err, result) => {
+    if (err) {
+      console.error('Error updating ticket:', err);
+      return res.status(500).json({ message: 'Failed to update ticket' });
+    }
+    res.status(200).json({ message: 'Ticket updated successfully' });
+  });
+};
+
 module.exports = {
   createTicket,
   assignTicket,
   updateTicketStatus,
   getTickets,
-  getTicketById
+  getTicketById,
+  updateTicketWithFile
 };

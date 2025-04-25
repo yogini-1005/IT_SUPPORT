@@ -74,11 +74,33 @@ const getTicketById = (ticketId, callback) => {
   });
 };
 
+const updateTicketWithFile = (ticketId, updatedFields, file, callback) => {
+  const filePath = file ? `/uploads/${file.filename}` : updatedFields.attachment || null;
+
+  const sql = `
+    UPDATE tickets 
+    SET title = ?, description = ?, priority = ?, department_id = ?, attachment = ?, updated_at = NOW()
+    WHERE id = ?
+  `;
+
+  const values = [
+    updatedFields.title,
+    updatedFields.description,
+    updatedFields.priority,
+    updatedFields.department_id,
+    filePath,
+    ticketId
+  ];
+
+  db.query(sql, values, callback);
+};
+
 module.exports = {
   createTicket,
   assignTicket,
   updateTicketStatus,
   getAllTickets,
   getTicketsByUser,
-  getTicketById
+  getTicketById,
+  updateTicketWithFile
 };

@@ -8,14 +8,13 @@ import empty from "../assets/images/out-of-stock.png"
 const STATUS_OPTIONS = [
   { value: 'in_progress', label: 'In Progress' },
   { value: 'resolved', label: 'Resolved' },
-  { value: 'closed', label: 'Closed' }
+  
 ];
 
 const STATUS_BADGE = {
-  open: 'bg-red-100 text-red-800',
   in_progress: 'bg-yellow-100 text-yellow-800',
-  solved: 'bg-green-100 text-green-800',
-  closed: 'bg-gray-100 text-gray-800',
+  resolved: 'bg-green-100 text-green-800',
+  
 };
 
 const PRIORITY_BADGE = {
