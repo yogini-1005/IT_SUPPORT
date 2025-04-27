@@ -1,6 +1,8 @@
 import React from 'react';
 import { FiAlertCircle, FiClock, FiUsers, FiBarChart2, FiLock, FiMessageSquare } from 'react-icons/fi';
 
+import '../assets/styles/Features.css';
+
 const Features = () => {
   const features = [
     {
@@ -52,11 +54,7 @@ const Features = () => {
         ))}
       </div>
       
-      <div className="mt-5 text-center">
-        <button className="btn btn-primary btn-lg px-4">
-          Explore All Features
-        </button>
-      </div>
+     
     </div>
   );
 };

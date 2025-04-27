@@ -8,8 +8,13 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-top">
           <div className="footer-brand">
-            <span className="logo-icon">🔧</span>
-            <span className="logo-text">SupportPro</span>
+            <span className="logo-icon">
+            <img
+              src="https://static.vecteezy.com/system/resources/previews/005/972/753/original/business-expert-specialist-setting-support-team-icon-free-vector.jpg"
+              alt="SupportPro Logo"
+              className="logo-img"
+            /> IT Support
+            </span>
             <p className="tagline">Your trusted IT support solution</p>
           </div>
           

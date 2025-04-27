@@ -91,14 +91,9 @@ const HowItWorks = () => {
         ))}
       </div>
       
-      <div className="mt-5 text-center">
-        <div className="d-inline-block p-4 bg-white rounded shadow-sm">
-          <h4 className="mb-3">Ready to get started?</h4>
-          <button className="btn btn-primary me-2">Submit a Ticket</button>
-          <button className="btn btn-outline-secondary">Watch Demo</button>
-        </div>
+      
       </div>
-    </div>
+    
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig';
 import { toast } from 'react-toastify';
+import '../assets/styles/EditTicket.css'; // Assuming you'll put the CSS in this file
 
 const EditTicket = () => {
   const { id: ticketId } = useParams();
@@ -12,7 +13,7 @@ const EditTicket = () => {
     description: '',
     priority: 'low',
     department_id: '',
-    attachment: '', // Existing attachment (if any)
+    attachment: '', 
   });
 
   const [file, setFile] = useState(null);
@@ -91,8 +92,12 @@ const EditTicket = () => {
     }
   };
 
+  if (loading) {
+    return <div className="ticket-container">Loading...</div>;
+  }
+
   return (
-    <div className="ticket-container mt-5">
+    <div className="ticket-container">
       <div className="ticket-card">
         <h2>Edit Ticket</h2>
         <form onSubmit={handleSubmit} className="ticket-form" encType="multipart/form-data">
@@ -156,7 +161,7 @@ const EditTicket = () => {
               onChange={handleChange}
             />
             {formData.attachment && !file && (
-              <p className="mt-1 text-sm text-gray-600">Current: {formData.attachment}</p>
+              <p className="attachment-info">Current: {formData.attachment}</p>
             )}
           </div>
 

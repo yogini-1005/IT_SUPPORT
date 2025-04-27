@@ -1,0 +1,102 @@
+.ticket-container {
+    padding: 2rem;
+    background: linear-gradient(to bottom right, #eaf4ff, #f6fbff);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;   
+    margin: 40px auto;
+}
+  
+.ticket-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 54, 102, 0.15);
+    width: 70%;
+    padding: 2rem;
+    animation: fadeIn 0.6s ease;
+}
+  
+.ticket-card h2 {
+    color: #003566;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+  
+.ticket-form {
+    display: flex;
+    flex-direction: column;
+}
+  
+.form-group {
+    margin-bottom: 1.2rem;
+}
+  
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #003566;
+    display: block;
+}
+  
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 0.6rem 2.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: border-color 0.2s;
+    font-size: 1rem;
+    width: 100%;
+}
+  
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+  
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+  
+.form-row .form-group {
+    flex: 1;
+}
+  
+.attachment-info {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+  
+.submit-button {
+    background-color: #003566;
+    color: #fff;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+  
+.submit-button:hover {
+    background-color: #002b4d;
+}
+  
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}

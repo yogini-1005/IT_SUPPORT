@@ -22,6 +22,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import EditTicket from "./pages/EditTicket";
+import ConversationPage from "./pages/ConversationPage";
 
 function App() {
   return (
@@ -88,6 +89,7 @@ function App() {
             </PrivateRoute>
           }
         />
+         <Route path="/conversation/:ticketId" element={<ConversationPage />} />
         <Route
           path="/assigned-tickets"
           element={

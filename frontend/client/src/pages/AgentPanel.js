@@ -2,19 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import empty from "../assets/images/out-of-stock.png";
 import '../assets/styles/Agent.css';
-import empty from "../assets/images/out-of-stock.png"
 
 const STATUS_OPTIONS = [
   { value: 'in_progress', label: 'In Progress' },
   { value: 'resolved', label: 'Resolved' },
-  
 ];
 
 const STATUS_BADGE = {
   in_progress: 'bg-yellow-100 text-yellow-800',
   resolved: 'bg-green-100 text-green-800',
-  
 };
 
 const PRIORITY_BADGE = {
@@ -88,23 +86,30 @@ const AgentPanel = () => {
       </div>
 
       <div className="agent-controls">
-        <input
-          type="text"
-          placeholder="Search my tickets..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="all">All</option>
-          {STATUS_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div className="search-filter">
+          <input
+            type="text"
+            placeholder="Search my tickets..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="status-select"
+          >
+            <option value="all">All Statuses</option>
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <button className="refresh-btn" onClick={() => window.location.reload()}>
+            Refresh
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -114,7 +119,7 @@ const AgentPanel = () => {
         </div>
       ) : filteredTickets.length === 0 ? (
         <div className="no-tickets">
-          <img src={empty} alt='No tickets found' /> 
+          <img src={empty} alt="No tickets found" />
           <p>No tickets found matching your criteria</p>
         </div>
       ) : (
@@ -156,6 +161,7 @@ const AgentPanel = () => {
                 <select
                   value={ticket.status}
                   onChange={(e) => handleStatusChange(ticket.id, e.target.value)}
+                  className="status-select"
                 >
                   {STATUS_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -163,7 +169,10 @@ const AgentPanel = () => {
                     </option>
                   ))}
                 </select>
-                <button onClick={() => navigate(`/ticket/${ticket.id}`)}>
+                <button 
+                  className="view-details-btn"
+                  onClick={() => navigate(`/ticket/${ticket.id}`)}
+                >
                   View Details
                 </button>
               </div>

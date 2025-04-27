@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import '../assets/styles/Settings.css'
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState('English');
+  const [profilePrivacy, setProfilePrivacy] = useState('Public');
 
   const handleSave = () => {
     alert('Settings saved!');
@@ -32,7 +35,33 @@ const Settings = () => {
           <label className="form-check-label">Dark Mode (Coming Soon)</label>
         </div>
 
-        <button className="btn btn-primary" onClick={handleSave}>
+        <div className="mb-3">
+          <label className="form-label">Language Preferences</label>
+          <select
+            className="form-select"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Profile Privacy</label>
+          <select
+            className="form-select"
+            value={profilePrivacy}
+            onChange={(e) => setProfilePrivacy(e.target.value)}
+          >
+            <option value="Public">Public</option>
+            <option value="Private">Private</option>
+          </select>
+        </div>
+
+        <button className="btn-save" onClick={handleSave}>
           Save Settings
         </button>
       </div>

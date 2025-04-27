@@ -13,14 +13,12 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userData, setUserData] = useState({ name: "", role: "" });
-  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        console.log("Decoded token:", decoded); // Debug
         setUserData({ name: decoded.name, role: decoded.role });
       } catch (error) {
         console.error("Invalid token");
@@ -37,26 +35,31 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setUserData({ name: "", role: "" }); // CLEAR userData
-    setShowDropdown(false);
-    setIsOpen(false);
     navigate("/");
+    setIsOpen(false);
   };
 
   const closeMenu = () => setIsOpen(false);
 
   return (
     <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
-      <div className="navbar-container">
-        <div className="navbar-brand">
-          <Link to="/" onClick={closeMenu}>
-            <span className="logo-icon">🔧</span>
-            <span className="logo-text">SupportPro</span>
+      <div className="navbar-container d-flex justify-content-between align-items-center">
+
+        {/* Left Side: Brand */}
+        <div className="navbar-left d-flex align-items-center">
+          <Link to="/" className="navbar-brand d-flex align-items-center gap-2" onClick={closeMenu}>
+            <img
+              src="https://static.vecteezy.com/system/resources/previews/005/972/753/original/business-expert-specialist-setting-support-team-icon-free-vector.jpg"
+              alt="SupportPro Logo"
+              className="logo-img"
+            />
+            <span className="brand-text">IT Support</span>
           </Link>
         </div>
 
-        <div className={`navbar-links ${isOpen ? "active" : ""}`}>
-          <nav className="main-nav">
+        {/* Right Side: Navigation & User */}
+        <div className={`navbar-right d-flex align-items-center gap-4 ${isOpen ? "active" : ""}`}>
+          <div className="main-nav d-flex gap-3 align-items-center">
             <NavItem to="/" icon={<FiHome />} text="Home" onClick={closeMenu} active={location.pathname === "/"} />
             <NavItem to="/features" icon={<FiCheckCircle />} text="Features" onClick={closeMenu} />
             <NavItem to="/how-it-works" icon={<FiHelpCircle />} text="How It Works" onClick={closeMenu} />
@@ -73,40 +76,43 @@ function Navbar() {
                 <NavItem to="/solved-tickets" icon={<FiCheckCircle />} text="Solved Tickets" onClick={closeMenu} />
               </>
             )}
-          </nav>
+          </div>
 
-          <div className="user-section">
+          {/* User Section */}
+          <div className="user-section d-flex align-items-center ms-auto">
             {userData.name ? (
-              <div className="user-dropdown">
-                <button className="user-button" onClick={() => setShowDropdown(!showDropdown)}>
+              <div className="user-dropdown position-relative">
+                <button className="user-button d-flex align-items-center gap-2">
                   <FiUser className="user-icon" />
                   <span className="user-name">{userData.name}</span>
                 </button>
-
-                {showDropdown && (
-                  <div className="dropdown-menu show">
-                    <Link to="/profile" className="dropdown-item" onClick={() => { setShowDropdown(false); closeMenu(); }}>
-                      <FiUser className="menu-icon" /> Profile
-                    </Link>
-                    <Link to="/settings" className="dropdown-item" onClick={() => { setShowDropdown(false); closeMenu(); }}>
-                      <FiSettings className="menu-icon" /> Settings
-                    </Link>
-                    <button className="dropdown-item logout" onClick={handleLogout}>
-                      <FiLogOut className="menu-icon" /> Logout
-                    </button>
-                  </div>
-                )}
+                <div className="dropdown-menu">
+                  <Link to="/profile" className="dropdown-item" onClick={closeMenu}>
+                    <FiUser className="menu-icon" /> Profile
+                  </Link>
+                  <Link to="/settings" className="dropdown-item" onClick={closeMenu}>
+                    <FiSettings className="menu-icon" /> Settings
+                  </Link>
+                  <button className="dropdown-item logout" onClick={handleLogout}>
+                    <FiLogOut className="menu-icon" /> Logout
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="auth-buttons">
-                <Link to="/login" className="btn login-btn" onClick={closeMenu}>Login</Link>
-                <Link to="/register" className="btn register-btn" onClick={closeMenu}>Register</Link>
+              <div className="auth-buttons d-flex gap-2">
+                <Link to="/login" className="btn btn-outline-primary" onClick={closeMenu}>
+                  Login
+                </Link>
+                <Link to="/register" className="btn btn-primary" onClick={closeMenu}>
+                  Register
+                </Link>
               </div>
             )}
           </div>
         </div>
 
-        <button className="navbar-toggle" onClick={() => setIsOpen(!isOpen)}>
+        {/* Mobile Toggle */}
+        <button className="navbar-toggle btn-icon" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FiX /> : <FiMenu />}
         </button>
       </div>
@@ -115,9 +121,9 @@ function Navbar() {
 }
 
 const NavItem = ({ to, icon, text, onClick, active }) => (
-  <Link to={to} className={`nav-item ${active ? "active" : ""}`} onClick={onClick}>
-    <span className="nav-icon">{icon}</span>
-    <span className="nav-text">{text}</span>
+  <Link to={to} className={`nav-item d-flex align-items-center gap-2 ${active ? "active" : ""}`} onClick={onClick}>
+    {icon}
+    <span>{text}</span>
   </Link>
 );
 
